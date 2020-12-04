@@ -12,7 +12,6 @@ class cameraUtils():
 		self.camera = PiCamera() 
 		#self.camera.resolution = (1920,1080)
 		self.camera.resolution = (800,600)
-		# self.camera.resolution = (3280 ,2464)
 		self.savePath=savePath
 
 	def CaptureSingleImage(self):
@@ -37,7 +36,7 @@ class cameraUtils():
 		except Exception as ex:
 			return None
 
-	def setRes(resolutionValue):
+	def setRes(self,resolutionValue):
 		if resolutionValue=='high':
 			self.camera.resolution = (3280 ,2464)
 		else:

@@ -39,10 +39,6 @@ class bh1750:
 	  data = bus.read_i2c_block_data(addr,ONE_TIME_HIGH_RES_MODE_1)
 	  return self.convertToNumber(data)
 
-	def main():
 
-	  while True:
-	    print ("Light Level : " + str(readLight()) + " lx")
-	    time.sleep(0.5)
   
 

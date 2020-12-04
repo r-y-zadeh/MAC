@@ -36,15 +36,15 @@ if not os.path.exists(app.config['SAVE_PATH']):
 from parameters import *
 from perpetualTimer import *
 try:
-    from CameraUtils import * 
+    from sensors import CameraUtils 
     camera=cameraUtils()
 except Exception as ex:
     print("error in camera")
 
-from pi_sht1x import SHT1x
+from sensors import SHT1x
 shtSensor=SHT1x(shtdataPin, shtClockPin, gpio_mode=GPIO.BCM) 
 
-import bh1750 
+from sensors import bh1750 
 luxSensor= bh1750.bh1750()
 
 stand_lights=actuator("stand light" , lightRelayPort)
@@ -127,7 +127,7 @@ def schedule():
     #     else:
     #         humidifier.schedule_off()
     
-    if now.hour >18:
+    if now.hour >16:
         stand_lights.schedule_on()
         roof_lights.schedule_on()
         fans.schedule_on()
