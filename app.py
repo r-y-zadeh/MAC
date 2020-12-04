@@ -13,7 +13,7 @@ from pprint import pprint
 import json
 from flask_socketio import SocketIO, emit
 from tiny_logger_model import Log_Data ,db
-
+from actuators.actuator import actuator
 
 
 
@@ -30,18 +30,6 @@ app.config['SAVE_PATH']='saved/'
 if not os.path.exists(app.config['SAVE_PATH']):
     os.makedirs(app.config['SAVE_PATH'])
 
-def init_GPOIO():
-    import RPi.GPIO as GPIO
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setup(fanRelayPort, GPIO.OUT)
-    GPIO.setup(humidifierRelayPort, GPIO.OUT)
-    GPIO.setup(lightRelayPort, GPIO.OUT)
-    GPIO.setup(motionDetectorPin, GPIO.IN)
-    GPIO.setup(RoofLightRelayPort, GPIO.OUT)
-    GPIO.output(fanRelayPort, GPIO.HIGH)
-    GPIO.output(humidifierRelayPort, GPIO.HIGH)
-    GPIO.output(lightRelayPort, GPIO.HIGH)
-    GPIO.output(RoofLightRelayPort, GPIO.HIGH)
 
 
 
@@ -59,26 +47,35 @@ shtSensor=SHT1x(shtdataPin, shtClockPin, gpio_mode=GPIO.BCM)
 import bh1750 
 luxSensor= bh1750.bh1750()
 
-init_GPOIO()
+stand_lights=actuator("stand light" , lightRelayPort)
+roof_lights=actuator("roof light" , RoofLightRelayPort)
+humidifier=actuator("humidifier" , humidifierRelayPort)
+fans=actuator("fans" , fanRelayPort)
+humidifier.schedule_off()
+@app.before_first_request
+def setup_logging():
+    if not app.debug:
+        app.logger.addHandler(logging.StreamHandler())
+        app.logger.setLevel(logging.INFO)
 
 def get_all_info():
         timestr=time.strftime('%Y-%m-%d %H:%M:%S')
         temprature=shtSensor.read_temperature()
         humidity= shtSensor.read_humidity(temprature)
         lightLevel=luxSensor.readLight()
-        image_path =camera.CaptureSingleImage()
+        img_path = camera.CaptureSingleImage()
+        full_path = "" 
+        if img_path !=None :
+            full_path = "http://5.201.131.31:7777/static/saved/"+ img_path 
         result={"time":timestr,
                 "temprature": temprature,
                 "humidity": humidity,
                 "light": lightLevel,
-                "image":"http://ryz.ddns.net:8888/static/saved/"+image_path}
+                "image" : full_path}
 
         inset_to_db(result)
-        
-        print("Data stored")
 
         res2= get_last_record()
-
         pprint(res2)
         print("Data restored")
         return result
@@ -117,6 +114,32 @@ def change_env():
     return render_template('change.html')
 
 
+
+def schedule():
+    now = datetime.datetime.now()
+    print("Debug timer {}:{}".format(now.hour , now.minute))
+
+
+    # if now.hour  <21  and now.hour >9:
+
+    #     if now.minute >30 and now.minute <32 :
+    #         humidifier.schedule_on()
+    #     else:
+    #         humidifier.schedule_off()
+    
+    if now.hour >18:
+        stand_lights.schedule_on()
+        roof_lights.schedule_on()
+        fans.schedule_on()
+    else:
+        stand_lights.schedule_off()
+        roof_lights.schedule_off()
+        fans.schedule_off()
+
+t = perpetualTimer(60,schedule)
+t.start()
+
+
 def check_file_type(file_path):
     with open(file_path, "rb") as file:
         info = fleep.get(file.read(128))
@@ -136,27 +159,26 @@ def change_status():
     pprint(request.data)
     status= json.loads(request.data.decode("utf-8"))
     print(status)
+    act= actuator("null",0)
+ 
     if status["name"]== "lights":
-        out_port = lightRelayPort
+        act= stand_lights
     elif status["name"]== "roof_lights":
-        out_port = RoofLightRelayPort
+        act = roof_lights
     elif status["name"]== "hummidifier":
-        out_port = humidifierRelayPort
+        act = humidifier
     elif status["name"]== "fan":
-        out_port = fanRelayPort
+        act = fans
     else:
          return
 
-
-    GPIO.setup(out_port, GPIO.OUT)
     if(status["value"]=="on"):
-        GPIO.output(out_port, GPIO.LOW)
+       response= act.turn_on()
 
     else:
-        GPIO.output(out_port, GPIO.HIGH)
+       response= act.turn_off()
 
-
-    return  Response("{} relay is {} now".format(status["name"] , status["value"]))
+    return  Response("{} relay is {} now".format(act.name , act.status))
 
 
 @app.route('/upload', methods=['POST'])
@@ -182,6 +204,8 @@ def inset_to_db(result):
 
 def get_top_records(top_num=100):
     x=Log_Data.query.order_by(Log_Data.D_id.desc()).limit(top_num)
+    return x
+    
     
 def get_last_record():
     temp_log = Log_Data.query.order_by(Log_Data.D_id.desc()).first()
@@ -215,6 +239,8 @@ def status():
     
 
 if __name__ == '__main__':
-    socketio.run(app, debug=False,host='0.0.0.0',port=8888)
+   socketio.run(app, debug=False,host='0.0.0.0',port=7777)
+  #  socketio.run(app, debug=False)
     # app.run(debug=False,host='0.0.0.0',port=8888)
+
 

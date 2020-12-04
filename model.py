@@ -36,6 +36,17 @@ class Sensor_Type(db.Model):
     def __repr__(self):
         return '<Sensor type %r>' % self.ST_name
 
+class Device_Type(db.Model):
+    __tablename__ = "device_types"
+    DT_id = db.Column(db.Integer, primary_key=True)
+    DT_name = db.Column(db.String(40), unique=True, nullable=False)
+    DT_desc = db.Column(db.String(100), unique=True, nullable=False)
+    DT_device = db.relationship("Device")
+
+
+    def __repr__(self):
+        return '<Sensor type %r>' % self.ST_name
+
 
 class Actuator_Type(db.Model):
     __tablename__ = "actuator_types"
@@ -53,8 +64,7 @@ class Region(db.Model):
     R_id = db.Column(db.Integer, primary_key=True)
     R_name = db.Column(db.String(80), unique=True, nullable=False)
     R_desc = db.Column(db.String(120), unique=True, nullable=False)
-    R_sensor = db.relationship("Sensor")
-    R_actuator = db.relationship("Actuator")
+    R_devices = db.relationship("Device")
     R_region_limits = db.relationship("Region_Limits")
 
 
@@ -68,7 +78,7 @@ class Actuator(db.Model):
     A_desc = db.Column(db.String(120), unique=True, nullable=False)
     A_code = db.Column(db.String(10), unique=True, nullable=False)
     A_GPIO = db.Column(db.Integer,nullable=False)
-    A_region = db.Column(db.Integer, db.ForeignKey('regions.R_id'),nullable=False)
+    A_device = db.Column(db.Integer, db.ForeignKey('devices.D_id'),nullable=False)
     A_Type = db.Column(db.Integer, db.ForeignKey('actuator_types.AT_id'),nullable=False )
     A_actuator_event = db.relationship("Actuator_Event")
 
@@ -76,13 +86,28 @@ class Actuator(db.Model):
     def __repr__(self):
         return '<Actuator \ %r>' % self.A_name
 
+class Device(db.Model):
+    __tablename__ = "devices"
+    D_id = db.Column(db.Integer, primary_key=True)
+    D_name = db.Column(db.String(80), unique=True, nullable=False)
+    D_desc = db.Column(db.String(120), unique=True, nullable=False)
+    D_code = db.Column(db.String(10), unique=True, nullable=False)
+    D_region = db.Column(db.Integer,db.ForeignKey('regions.R_id'),nullable=False )
+    D_Type = db.Column(db.Integer,db.ForeignKey('device_types.DT_id') ,nullable=False )
+    D_sensors = db.relationship("Sensor")
+    D_actuators = db.relationship("Actuator")
+
+
+    def __repr__(self):
+        return '<Sensor \ %r>' % self.S_name
+
 class Sensor(db.Model):
     __tablename__ = "sensors"
     S_id = db.Column(db.Integer, primary_key=True)
     S_name = db.Column(db.String(80), unique=True, nullable=False)
     S_desc = db.Column(db.String(120), unique=True, nullable=False)
     S_code = db.Column(db.String(10), unique=True, nullable=False)
-    S_region = db.Column(db.Integer,db.ForeignKey('regions.R_id'),nullable=False )
+    S_region = db.Column(db.Integer,db.ForeignKey('devices.D_id'),nullable=False )
     S_Type = db.Column(db.Integer,db.ForeignKey('sensor_types.ST_id') ,nullable=False )
     S_sensor_value = db.relationship("Sensor_Values")
     S_region_limits = db.relationship("Region_Limits")
@@ -125,9 +150,6 @@ class Region_Limits(db.Model):
     RL_Min_Value = db.Column(db.String(120), unique=True, nullable=False)
     RL_Region = db.Column(db.Integer,db.ForeignKey('regions.R_id'),nullable=False )
     RL_Sensor = db.Column(db.Integer,db.ForeignKey('sensors.S_id') ,nullable=False)
-
-    AE_actuator = db.Column(db.Integer,db.ForeignKey('actuators.A_id'),nullable=False )
-
 
     def __repr__(self):
         return '<Sensor  value\ %r>' % self.SV_value

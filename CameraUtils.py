@@ -16,24 +16,26 @@ class cameraUtils():
 		self.savePath=savePath
 
 	def CaptureSingleImage(self):
+		try:	
+			self.camera.start_preview()
+			#time.sleep(0.1)
+			currentDT = datetime.datetime.now()
 
-		self.camera.start_preview()
-		#time.sleep(0.1)
-		currentDT = datetime.datetime.now()
+			folder = currentDT.strftime("%Y-%m-%d")
+			savePath=self.savePath+folder
+			if not os.path.exists(savePath) :
+				os.makedirs(savePath)
+			fileName= currentDT.strftime("%H-%M-%S") + ".jpg"
+			fileId= folder +"/"+ fileName
+			filePath =savePath +"/"+ fileName
 
-		folder = currentDT.strftime("%Y-%m-%d")
-		savePath=self.savePath+folder
-		if not os.path.exists(savePath) :
-			os.makedirs(savePath)
-		fileName= currentDT.strftime("%H-%M-%S") + ".jpg"
-		fileId= folder +"/"+ fileName
-		filePath =savePath +"/"+ fileName
+			self.camera.capture(filePath)
 
-		self.camera.capture(filePath)
+			self.camera.stop_preview()
 
-		self.camera.stop_preview()
-
-		return fileId
+			return fileId
+		except Exception as ex:
+			return None
 
 	def setRes(resolutionValue):
 		if resolutionValue=='high':
