@@ -11,6 +11,7 @@ import socket
 import RPi.GPIO as GPIO
 from pprint import pprint
 import json
+import datetime
 from flask_socketio import SocketIO, emit
 from tiny_logger_model import Log_Data ,db
 from actuators.actuator import actuator
@@ -48,7 +49,8 @@ from sensors import bh1750
 luxSensor= bh1750.bh1750()
 
 stand_lights=actuator("stand light" , lightRelayPort)
-roof_lights=actuator("roof light" , RoofLightRelayPort)
+roof_lights_sun=actuator("roof light sun" , RoofLightSunRelayPort)
+roof_lights_moon=actuator("roof light moon" , RoofLightMoonRelayPort)
 humidifier=actuator("humidifier" , humidifierRelayPort)
 fans=actuator("fans" , fanRelayPort)
 humidifier.schedule_off()
@@ -58,6 +60,11 @@ def setup_logging():
         app.logger.addHandler(logging.StreamHandler())
         app.logger.setLevel(logging.INFO)
 
+serve_ip="192.168.1.100"
+serve_port= "7777"
+base_url=serve_ip+":"+serve_port+"/static/saved/"
+
+
 def get_all_info():
         timestr=time.strftime('%Y-%m-%d %H:%M:%S')
         temprature=shtSensor.read_temperature()
@@ -66,7 +73,7 @@ def get_all_info():
         img_path = camera.CaptureSingleImage()
         full_path = "" 
         if img_path !=None :
-            full_path = "http://5.201.131.31:7777/static/saved/"+ img_path 
+            full_path = base_url+ img_path 
         result={"time":timestr,
                 "temprature": temprature,
                 "humidity": humidity,
@@ -129,11 +136,13 @@ def schedule():
     
     if now.hour >16:
         stand_lights.schedule_on()
-        roof_lights.schedule_on()
+        roof_lights_sun.schedule_on()
+        roof_lights_moon.schedule_on()
         fans.schedule_on()
     else:
         stand_lights.schedule_off()
-        roof_lights.schedule_off()
+        roof_lights_sun.schedule_off()
+        roof_lights_moon.schedule_off()
         fans.schedule_off()
 
 t = perpetualTimer(60,schedule)
@@ -163,8 +172,10 @@ def change_status():
  
     if status["name"]== "lights":
         act= stand_lights
-    elif status["name"]== "roof_lights":
-        act = roof_lights
+    elif status["name"]== "roof_lights_sun":
+        act = roof_lights_sun
+    elif status["name"]== "roof_lights_moon":
+        act = roof_lights_moon
     elif status["name"]== "hummidifier":
         act = humidifier
     elif status["name"]== "fan":
@@ -239,7 +250,7 @@ def status():
     
 
 if __name__ == '__main__':
-   socketio.run(app, debug=False,host='0.0.0.0',port=7777)
+   socketio.run(app, debug=False,host='0.0.0.0',port=serve_port)
   #  socketio.run(app, debug=False)
     # app.run(debug=False,host='0.0.0.0',port=8888)
 

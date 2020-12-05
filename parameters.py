@@ -13,9 +13,10 @@ shtdataPin = 24
 shtClockPin=23
 
 lightRelayPort=21
-humidifierRelayPort=16
-fanRelayPort=12
-RoofLightRelayPort = 20
+humidifierRelayPort=22
+fanRelayPort=20
+RoofLightSunRelayPort = 17
+RoofLightMoonRelayPort = 27
 
 motionDetectorPin=26
 light_relay_status="UnKnown"

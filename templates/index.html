@@ -35,9 +35,13 @@
             } else if (nam == "lights") {
                 checkBoxVar = document.getElementById("chk_lights");
             }
-            else if (nam == "roof_lights") {
-                checkBoxVar = document.getElementById("chk_roof_lights");
-            } else if (nam == "fan") {
+            else if (nam == "roof_lights_sun") {
+                checkBoxVar = document.getElementById("chk_roof_lights_sun");
+            }
+            else if (nam == "roof_lights_moon") {
+                checkBoxVar = document.getElementById("chk_roof_lights_moon");
+            } 
+            else if (nam == "fan") {
                 checkBoxVar = document.getElementById("chk_fan");
             }
 
@@ -315,14 +319,21 @@
     <div class="row">
         
         <div class="col-lg-2">
-            <img id="img_roof_lights" src="/static/images/icons/roof_lights-off-100.jpg" alt="lights_btn" height="50" width="50">
+            <img id="img_roof_lights_moon" src="/static/images/icons/roof_lights_moon-off-100.jpg" alt="lights_btn" height="50" width="50">
             <label class="switch">
-                <input id="chk_roof_lights" type="checkbox" onclick="sendJSON(&#34;roof_lights&#34;)">
+                <input id="chk_roof_lights_moon" type="checkbox" onclick="sendJSON(&#34;roof_lights_moon&#34;)">
                 <span class="slider round"></span>
             </label>
 
         </div>
+        <div class="col-lg-2">
+            <img id="img_roof_lights_sun" src="/static/images/icons/roof_lights_sun-off-100.jpg" alt="lights_btn" height="50" width="50">
+            <label class="switch">
+                <input id="chk_roof_lights_sun" type="checkbox" onclick="sendJSON(&#34;roof_lights_sun&#34;)">
+                <span class="slider round"></span>
+            </label>
 
+        </div>
         <div class="col-lg-2">
             <img id="img_lights" src="/static/images/icons/lights-off-100.jpg" alt="lights_btn" height="50" width="50">
             <label class="switch">

@@ -1,0 +1,6 @@
+fleep
+flask
+rpi.GPIO
+flask_socketio
+flask_sqlalchemy
+smbus

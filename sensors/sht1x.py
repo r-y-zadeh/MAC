@@ -128,7 +128,7 @@ class SHT1x:
         """
         if self._logger:
             return self._logger
-        from pi_sht1x.logging import create_logger
+        from sensors.logging import create_logger
         self._logger = create_logger(__name__)
         return self._logger
 
