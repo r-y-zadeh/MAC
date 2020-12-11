@@ -15,7 +15,10 @@ import datetime
 from flask_socketio import SocketIO, emit
 from tiny_logger_model import Log_Data ,db
 from actuators.actuator import actuator
-
+import paho.mqtt.client as mqtt
+from server_configs import *
+from parameters import *
+from perpetualTimer import *
 
 
 logging.basicConfig(filename='app.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
@@ -33,14 +36,11 @@ if not os.path.exists(app.config['SAVE_PATH']):
 
 
 
-
-from parameters import *
-from perpetualTimer import *
-try:
-    from sensors import CameraUtils 
-    camera=cameraUtils()
-except Exception as ex:
-    print("error in camera")
+# try:
+from sensors import CameraUtils 
+camera=CameraUtils.cameraUtils()
+# except Exception as ex:
+#     print("error in camera")
 
 from sensors import SHT1x
 shtSensor=SHT1x(shtdataPin, shtClockPin, gpio_mode=GPIO.BCM) 
@@ -54,17 +54,17 @@ roof_lights_moon=actuator("roof light moon" , RoofLightMoonRelayPort)
 humidifier=actuator("humidifier" , humidifierRelayPort)
 fans=actuator("fans" , fanRelayPort)
 humidifier.schedule_off()
+
 @app.before_first_request
 def setup_logging():
     if not app.debug:
         app.logger.addHandler(logging.StreamHandler())
         app.logger.setLevel(logging.INFO)
 
-serve_ip="192.168.1.100"
-serve_port= "7777"
-base_url=serve_ip+":"+serve_port+"/static/saved/"
-
-
+client = mqtt.Client("raspi")
+client.connect(mqtt_host)
+client.subscribe(mqtt_topic)
+import time 
 def get_all_info():
         timestr=time.strftime('%Y-%m-%d %H:%M:%S')
         temprature=shtSensor.read_temperature()
@@ -81,6 +81,16 @@ def get_all_info():
                 "image" : full_path}
 
         inset_to_db(result)
+        mqtt_message = {
+            "temperature":temprature,
+            "humidity": humidity,
+            "light": lightLevel,
+            "device_name":"raspi"
+        }
+
+        print(json.dumps(mqtt_message))
+        client.publish(mqtt_topic,json.dumps(mqtt_message))
+
 
         res2= get_last_record()
         pprint(res2)
