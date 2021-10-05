@@ -12,6 +12,7 @@ class cameraUtils():
 		self.camera = PiCamera() 
 		#self.camera.resolution = (1920,1080)
 		self.camera.resolution = (800,600)
+		self.camera.rotation=180
 		self.savePath=savePath
 
 	def CaptureSingleImage(self):
@@ -31,7 +32,6 @@ class cameraUtils():
 			self.camera.capture(filePath)
 
 			self.camera.stop_preview()
-
 			return fileId
 		except Exception as ex:
 			return None

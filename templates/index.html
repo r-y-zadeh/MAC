@@ -30,10 +30,13 @@
             var checkBoxVar
             var val = "on"
             
-            if (nam == "hummidifier") {
-                checkBoxVar = document.getElementById("chk_hummidifier");
+            if (nam == "mister") {
+                checkBoxVar = document.getElementById("chk_mister");
             } else if (nam == "lights") {
                 checkBoxVar = document.getElementById("chk_lights");
+            }
+            else if (nam == "home_light") {
+                checkBoxVar = document.getElementById("chk_home_light");
             }
             else if (nam == "roof_lights_sun") {
                 checkBoxVar = document.getElementById("chk_roof_lights_sun");
@@ -319,7 +322,7 @@
     <div class="row">
         
         <div class="col-lg-2">
-            <img id="img_roof_lights_moon" src="/static/images/icons/roof_lights_moon-off-100.jpg" alt="lights_btn" height="50" width="50">
+            <img id="img_roof_lights_moon" src="/static/images/icons/roof_lights_moon-off-100.jpg" alt="roof_lights_moon_btn" height="50" width="50">
             <label class="switch">
                 <input id="chk_roof_lights_moon" type="checkbox" onclick="sendJSON(&#34;roof_lights_moon&#34;)">
                 <span class="slider round"></span>
@@ -327,9 +330,17 @@
 
         </div>
         <div class="col-lg-2">
-            <img id="img_roof_lights_sun" src="/static/images/icons/roof_lights_sun-off-100.jpg" alt="lights_btn" height="50" width="50">
+            <img id="img_roof_lights_sun" src="/static/images/icons/roof_lights_sun-off-100.jpg" alt="roof_lights_sun_btn" height="50" width="50">
             <label class="switch">
                 <input id="chk_roof_lights_sun" type="checkbox" onclick="sendJSON(&#34;roof_lights_sun&#34;)">
+                <span class="slider round"></span>
+            </label>
+
+        </div>
+        <div class="col-lg-2">
+            <img id="img_home_light" src="/static/images/icons/home_light-off-100.jpg" alt="home_lights_btn" height="50" width="50">
+            <label class="switch">
+                <input id="chk_home_light" type="checkbox" onclick="sendJSON(&#34;home_light&#34;)">
                 <span class="slider round"></span>
             </label>
 
@@ -347,10 +358,11 @@
             <img id="img_hummidifier" src="/static/images/icons/hummidifier-off-100.jpg" alt="humidifier_btn"
                 height="50" width="50">
             <label class="switch">
-                <input id="chk_hummidifier" type="checkbox" onclick="sendJSON(&#34;hummidifier&#34;)">
+                <input id="chk_mister" type="checkbox" onclick="sendJSON(&#34;mister&#34;)">
                 <span class="slider round"></span>
             </label>
         </div>
+
         <div class="col-lg-2">
             <img id="img_fan" src="/static/images/icons/fan-off-100.jpg" alt="fan" height="50" width="50">
             <label class="switch">

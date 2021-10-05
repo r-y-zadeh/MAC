@@ -14,12 +14,12 @@ import json
 import datetime
 from flask_socketio import SocketIO, emit
 from tiny_logger_model import Log_Data ,db
-from actuators.actuator import actuator
+from actuators.actuator import actuator, on_off_range
 import paho.mqtt.client as mqtt
 from server_configs import *
 from parameters import *
 from perpetualTimer import *
-
+import schedule
 
 logging.basicConfig(filename='app.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
 async_mode = None
@@ -48,12 +48,50 @@ shtSensor=SHT1x(shtdataPin, shtClockPin, gpio_mode=GPIO.BCM)
 from sensors import bh1750 
 luxSensor= bh1750.bh1750()
 
+
+act_array = []
+
 stand_lights=actuator("stand light" , lightRelayPort)
 roof_lights_sun=actuator("roof light sun" , RoofLightSunRelayPort)
 roof_lights_moon=actuator("roof light moon" , RoofLightMoonRelayPort)
-humidifier=actuator("humidifier" , humidifierRelayPort)
+home_light=actuator("home_light" , home_light_Relay_Port)
 fans=actuator("fans" , fanRelayPort)
-humidifier.schedule_off()
+mister = actuator("mister", MisterRelayPort)
+
+home_light.set_on_off("19:00:00" , "23:50:10")
+roof_lights_sun.set_on_off("18:30:00" , "23:50:10")
+roof_lights_sun.set_on_off("18:30:00" , "23:50:10")
+roof_lights_moon.set_on_off("18:30:00" , "23:50:00")
+stand_lights.set_on_off("18:00:00" , "23:00:00")
+
+mister.set_on_off("08:00:00" , "08:00:05")
+mister.set_on_off("13:00:00" , "13:00:05")
+mister.set_on_off("18:00:00" , "18:00:03")
+
+
+act_array.append(stand_lights)
+act_array.append(roof_lights_sun)
+act_array.append(roof_lights_moon)
+act_array.append(home_light)
+act_array.append(fans)
+act_array.append(mister)
+
+
+for act_element in act_array:
+    act_schedules= act_element.get_on_off_schedules()
+    act_name = act_element.get_name()
+    for  act_schedule in act_schedules:
+        print ("Set on time {}  and off_time {} for {}".format(act_schedule.on_string ,act_schedule.off_string  ,act_name))
+        schedule.every().day.at(act_schedule.on_string).do(act_element.schedule_on)
+        schedule.every().day.at(act_schedule.off_string ).do(act_element.schedule_off)
+
+def schedule_job():
+    schedule.run_pending()
+
+schedule_timer = perpetualTimer(1,schedule_job)
+schedule_timer.start()
+
+
 
 @app.before_first_request
 def setup_logging():
@@ -61,9 +99,9 @@ def setup_logging():
         app.logger.addHandler(logging.StreamHandler())
         app.logger.setLevel(logging.INFO)
 
-client = mqtt.Client("raspi")
-client.connect(mqtt_host)
-client.subscribe(mqtt_topic)
+# client = mqtt.Client("raspi")
+# client.connect(mqtt_host)
+# client.subscribe(mqtt_topic)
 import time 
 def get_all_info():
         timestr=time.strftime('%Y-%m-%d %H:%M:%S')
@@ -81,6 +119,7 @@ def get_all_info():
                 "image" : full_path}
 
         inset_to_db(result)
+        
         mqtt_message = {
             "temperature":temprature,
             "humidity": humidity,
@@ -88,13 +127,10 @@ def get_all_info():
             "device_name":"raspi"
         }
 
-        print(json.dumps(mqtt_message))
-        client.publish(mqtt_topic,json.dumps(mqtt_message))
-
-
+        # client.publish(mqtt_topic,json.dumps(mqtt_message))
         res2= get_last_record()
         pprint(res2)
-        print("Data restored")
+        
         return result
 
 Logging_time = perpetualTimer(logInterval,get_all_info)
@@ -132,33 +168,6 @@ def change_env():
 
 
 
-def schedule():
-    now = datetime.datetime.now()
-    print("Debug timer {}:{}".format(now.hour , now.minute))
-
-
-    # if now.hour  <21  and now.hour >9:
-
-    #     if now.minute >30 and now.minute <32 :
-    #         humidifier.schedule_on()
-    #     else:
-    #         humidifier.schedule_off()
-    
-    if now.hour >16:
-        stand_lights.schedule_on()
-        roof_lights_sun.schedule_on()
-        roof_lights_moon.schedule_on()
-        fans.schedule_on()
-    else:
-        stand_lights.schedule_off()
-        roof_lights_sun.schedule_off()
-        roof_lights_moon.schedule_off()
-        fans.schedule_off()
-
-t = perpetualTimer(60,schedule)
-t.start()
-
-
 def check_file_type(file_path):
     with open(file_path, "rb") as file:
         info = fleep.get(file.read(128))
@@ -175,7 +184,7 @@ def download_url(file_url):
 
 @app.route('/change_status', methods=['POST'])
 def change_status():
-    pprint(request.data)
+
     status= json.loads(request.data.decode("utf-8"))
     print(status)
     act= actuator("null",0)
@@ -186,8 +195,10 @@ def change_status():
         act = roof_lights_sun
     elif status["name"]== "roof_lights_moon":
         act = roof_lights_moon
-    elif status["name"]== "hummidifier":
-        act = humidifier
+    elif status["name"]== "mister":
+        act = mister
+    elif status["name"]== "home_light":
+        act = home_light
     elif status["name"]== "fan":
         act = fans
     else:

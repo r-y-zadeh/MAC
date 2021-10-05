@@ -1,5 +1,5 @@
 
-logInterval=30
+logInterval=360
 global MotionCapture
 MotionInterval=5
 MotionCapture=False
@@ -13,8 +13,9 @@ shtdataPin = 24
 shtClockPin=23
 
 lightRelayPort=21
-humidifierRelayPort=22
+home_light_Relay_Port=16
 fanRelayPort=20
+MisterRelayPort=26
 RoofLightSunRelayPort = 17
 RoofLightMoonRelayPort = 27
 
