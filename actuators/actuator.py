@@ -1,4 +1,5 @@
 import RPi.GPIO as GPIO
+import json
 
 class on_off_range :
     def __init__(self, on_string , off_string):
@@ -18,7 +19,12 @@ class actuator:
         self.custom_control=False
         self.on_off_array= []
         self.schedule_off()
+    
+    def toJSON(self):
 
+        return json.dumps(self, default=lambda o: o.__dict__, 
+            sort_keys=True, indent=4)
+            
     def turn_on(self):
         try:
             GPIO.output(self.port, GPIO.LOW)
