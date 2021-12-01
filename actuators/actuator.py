@@ -31,7 +31,7 @@ class actuator:
             self.custom_control=True
             self.status="ON"
             return("ON")
-        except Exception as ex:
+        except Exceptpwm_actuatorion as ex:
             return("Err")
     
     def set_on_off(self,on_string , off_string): 

@@ -15,6 +15,7 @@ import datetime
 from flask_socketio import SocketIO, emit
 from tiny_logger_model import Log_Data ,db
 from actuators.actuator import actuator, on_off_range
+from actuators.pwm_actuator import *
 import paho.mqtt.client as mqtt
 from server_configs import *
 from parameters import *
@@ -58,15 +59,18 @@ home_light=actuator("home_light" , home_light_Relay_Port)
 fans=actuator("fans" , fanRelayPort)
 mister = actuator("mister", MisterRelayPort)
 
-home_light.set_on_off("19:00:00" , "23:50:10")
-roof_lights_sun.set_on_off("18:30:00" , "23:50:10")
-roof_lights_sun.set_on_off("18:30:00" , "23:50:10")
-roof_lights_moon.set_on_off("18:30:00" , "23:50:00")
-stand_lights.set_on_off("18:00:00" , "23:00:00")
+dimmer_light= pwm_actuator("Dimmer_light", DimmerPort,pwm_frequency,pwm_duty_cycle)
 
-mister.set_on_off("08:00:00" , "08:00:05")
-mister.set_on_off("13:00:00" , "13:00:05")
-mister.set_on_off("18:00:00" , "18:00:03")
+home_light.set_on_off("20:00:00" , "22:30:10")
+roof_lights_sun.set_on_off("17:30:00" , "22:40:10")
+roof_lights_sun.set_on_off("17:30:00" , "22:40:10")
+roof_lights_moon.set_on_off("17:30:00" , "22:40:00")
+stand_lights.set_on_off("17:00:00" , "22:00:00")
+
+mister.set_on_off("08:00:00" , "08:00:07")
+mister.set_on_off("11:00:00" , "11:00:07")
+mister.set_on_off("16:00:00" , "16:00:07")
+mister.set_on_off("20:00:00" , "20:00:07")
 
 
 act_array.append(stand_lights)
@@ -100,25 +104,31 @@ def setup_logging():
         app.logger.addHandler(logging.StreamHandler())
         app.logger.setLevel(logging.INFO)
 
-# client = mqtt.Client("raspi")
-# client.connect(mqtt_host)
-# client.subscribe(mqtt_topic)
+client = mqtt.Client("raspi")
+print (mqtt_host)
+client.connect(mqtt_host)
+client.subscribe(mqtt_topic)
+
 import time 
 def get_all_info():
         timestr=time.strftime('%Y-%m-%d %H:%M:%S')
         temprature=shtSensor.read_temperature()
         humidity= shtSensor.read_humidity(temprature)
         lightLevel=luxSensor.readLight()
-        img_path = camera.CaptureSingleImage()
+        img_path, img_thumb_path =camera.CaptureSingleImage()
         full_path = "" 
+        full_thumb_path=""
         if img_path !=None :
             full_path = base_url+ img_path 
+            full_thumb_path = base_url+ img_thumb_path 
+        
         result={"time":timestr,
                 "temprature": temprature,
                 "humidity": humidity,
                 "light": lightLevel,
-                "image" : full_path}
-
+                "image" : full_path ,
+                "thumb":full_thumb_path }
+        pprint(result)
         inset_to_db(result)
         
         mqtt_message = {
@@ -128,9 +138,9 @@ def get_all_info():
             "device_name":"raspi"
         }
 
-        # client.publish(mqtt_topic,json.dumps(mqtt_message))
-        res2= get_last_record()
-        pprint(res2)
+        client.publish(mqtt_topic,json.dumps(mqtt_message))
+        query_result= get_last_record()        
+        pprint(query_result)       
         
         return result
 
@@ -140,7 +150,7 @@ Logging_time.start()
 
 def background_thread():
     while True:
-        socketio.sleep(5)
+        socketio.sleep(Seconds_to_emit_response)
         res=get_last_record()
         
         socketio.emit('my_response',
@@ -162,11 +172,12 @@ def recive_command():
 def index():
  
     return render_template('index.html' , async_mode=socketio.async_mode)
-@app.route('/change-env')
-def change_env():
- 
-    return render_template('change.html')
 
+
+@app.route('/new')
+def index2():
+ 
+    return render_template('index_new.html' , async_mode=socketio.async_mode)
 
 
 def check_file_type(file_path):
@@ -202,8 +213,18 @@ def change_status():
         act = home_light
     elif status["name"]== "fan":
         act = fans
+    elif status["name"]== "dimmer":
+        
+        pwm_value = int(status["value"])
+        dimmer_light.change_duty_cycle(pwm_value)        
+        return  Response("{} relay is {} now".format(act.name , act.status))
+    elif status["name"]== "refresh":
+        get_all_info()
+        return  Response("New Data Saved. wait {} seconds to reload".format(Seconds_to_emit_response))
+
     else:
-         return
+         return  Response("Invalid request")
+
 
     if(status["value"]=="on"):
        response= act.turn_on()
@@ -231,7 +252,7 @@ def upload():
 def inset_to_db(result):
     dt = Log_Data(D_temprature= result["temprature"], D_hummidity= result["humidity"], 
                     D_Lux= result["light"], D_time= result["time"] ,
-                    U_image_path=  result["image"],U_Desc="_" )
+                    U_image_path=  result["image"],U_image_thumb_path = result["thumb"], U_Desc="_" )
     db.session.add(dt)
     db.session.commit()
 
@@ -246,7 +267,8 @@ def get_last_record():
                 "temprature": temp_log.D_temprature,
                 "humidity": temp_log.D_hummidity,
                 "light": temp_log.D_Lux,
-                "image":temp_log.U_image_path
+                "image":temp_log.U_image_path,
+                "thumb":temp_log.U_image_thumb_path,
                 }
     return result
 
@@ -272,7 +294,7 @@ def status():
     
 
 if __name__ == '__main__':
-   socketio.run(app, debug=False,host='0.0.0.0',port=serve_port)
+   socketio.run(app, debug=False ,host='0.0.0.0',port=serve_port)
   #  socketio.run(app, debug=False)
     # app.run(debug=False,host='0.0.0.0',port=8888)
 

@@ -60,3 +60,51 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%;
 }
+
+.btn_refresh {
+  transition: transform .2s; /* Animation */
+  width: 50px;
+  height: 50x;
+  margin: 0 auto;
+}
+
+.btn_refresh:hover {
+  transform: scale(1.1); 
+}
+HEADER,
+FOOTER{
+    Width: 100%;
+    z-Index: 1;
+    Top: 0;
+    Margin: 0;
+    Padding: 10px 0 0 0;
+    Text-Align: Center;
+    Background: #21B4F9;
+    Background: #2C94E0;
+    Background: Linear-Gradient(45deg, #2C94E0, #21B4F9), URL(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACcAAAAnCAQAAAAmqpm+AAAAUUlEQVR4AWMgDvyXJEoV7/AwjnckGzdq3Khxo8apDQvj/kuCIS9OqIYCefFD4tzG+F+NGFW0Mo7ysBvNFaPGjRo3apzkIDfuP89/XipASQgEAF4fpQGYXVnnAAAAAElFTkSuQmCC);
+    Background-Blend-Mode: Lighten;
+    Box-Shadow: 0 0 20px 0 rgba(0,0,0,.4);
+    -Moz-Animation: BluePrint 60s Infinite;
+    -Webkit-Animation: BluePrint 60s Infinite;
+    Animation: BluePrint 60s Infinite;
+}
+
+@-moz-keyframes BluePrint{
+    0% {Background-Position: 0 0;}
+    100% {Background-Position: 1100% 100%;}
+}
+
+@-webkit-keyframes BluePrint{
+    0% {Background-Position: 0 0;}
+    100% {Background-Position: 1100% 100%;}
+}
+
+@keyframes BluePrint{
+    0% {Background-Position: 0 0;}
+    100% {Background-Position: -100% 100%;}
+}
+HEADER .Preview{
+  
+  Margin-Top: 1px;
+ 
+}

@@ -4,6 +4,7 @@ import datetime
 import os
 from parameters import savePath
 
+from PIL import Image
 
 class cameraUtils():
 
@@ -26,15 +27,28 @@ class cameraUtils():
 			if not os.path.exists(savePath) :
 				os.makedirs(savePath)
 			fileName= currentDT.strftime("%H-%M-%S") + ".jpg"
+			thumb_file_name= currentDT.strftime("%H-%M-%S") + "_thumb.jpg"
 			fileId= folder +"/"+ fileName
+			thumb_file_id=folder +"/"+ thumb_file_name
 			filePath =savePath +"/"+ fileName
+			thumb_file_path= savePath +"/"+ thumb_file_name
 
 			self.camera.capture(filePath)
 
+			image = Image.open(filePath)
+			MAX_SIZE = (200, 150)
+  
+			image.thumbnail(MAX_SIZE)
+  
+			# creating thumbnail
+			image.save(thumb_file_path)
+
 			self.camera.stop_preview()
-			return fileId
+
+			return fileId ,thumb_file_id
+
 		except Exception as ex:
-			return None
+			return None , None
 
 	def setRes(self,resolutionValue):
 		if resolutionValue=='high':
