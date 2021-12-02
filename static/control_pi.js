@@ -77,7 +77,7 @@ function sendJSON(nam) {
         var img_lbl = "img_";
         img_lbl = img_lbl.concat(nam);
         img_path = "/static/images/icons/";
-        img_path = img_path.concat(nam, "-", val, "-100.jpg");
+        img_path = img_path.concat(nam, "-", val, "-100.png");
         document.getElementById(img_lbl).src = img_path;
     }
 }

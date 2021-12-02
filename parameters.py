@@ -1,5 +1,5 @@
 
-logInterval=60
+logInterval=300
 global MotionCapture
 MotionInterval=5
 MotionCapture=False

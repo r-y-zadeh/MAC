@@ -94,283 +94,318 @@
         <header id="Header">
     <div class="Preview"> 
         <div class="row">
-        <div class="col-lg-2">
+        
+        <div class="col-lg-3  background: #01446b;
+        border-radius: 10px;2">
             <img src="/static/images/logo.png"  height="100" width="100">
         </div>
       
-        <div class="col-lg-2">
+        <div class="col-lg-3">
             <p > <b>Rama -  Home - V0.0.1</b> <p>
         </div>
         
-        <div class="col-lg-2">
+        <div class="col-lg-3">
             <h4 id='par-time'>time</h4>
         </div>
 
-        <div class="col-lg-2">
+        <div class="col-lg-3">
             <img id="btn_refresh" src="static/images/refresh.png" class="btn_refresh" onclick="sendJSON(&#34;refresh&#34;)">
 
         </div>
-</div>
+        </div>
 </dev>
 </header>
 
 
  
+<div class="row">
 
-
-    <div class="row">
-        <div class="col-lg-3">
-            <a  href="" alt="camera link" id="a_camera" ><img  id="img_camera" src="" alt="camera image" width="200" height="150"></a>
-        
-
-        </div>
-        <div class="col-lg-3">
-            <!-- external temp -->
-            <canvas id="external-temp"> </canvas>
-            <script>
-                var temprature_gauge = new RadialGauge({
-                    renderTo: 'external-temp',
-                    width: 200,
-                    height: 200,
-                    units: "°C",
-                    title: "Temprature",
-                    minValue: -10,
-                    maxValue: 50,
-                    majorTicks: ["-10", "0", "10", "20", "30", "40", "50"],
-                    minorTicks: 2,
-                    highlights: [{
-                            from: -10,
-                            to: 15,
-                            color: 'rgba(0, 0, 255, .3)'
-                        }, {
-                            from: 15,
-                            to: 27,
-                            color: 'rgba(120, 120, 200, .3)'
-                        },
-                        {
-                            from: 27,
-
-                            to: 50,
-                            color: 'rgba(255, 0, 0, .3)'
-                        }
-                    ],
-                    ticksAngle: 225,
-                    startAngle: 67.5,
-                    borders: false,
-                    borderShadowWidth: 0,
-                    valueBox: true,
-                    colorPlate:'rgba(47, 255, 255, 0)',
-                    colorNumbers:'rgba(255, 255, 255, 1)'
-                })
-                temprature_gauge.draw();
-            </script>
-        </div>
-        <!-- frontroom -->
-        <div class="col-lg-3">
-            <canvas id="hummidity_value"> </canvas>
-            <script>
-                var Humidity_guage = new RadialGauge({
-                    renderTo: 'hummidity_value',
-                    width: 200,
-                    height: 200,
-                    units: "%RH",
-                    title:"Hummidity",
-                    minValue: 0,
-                    maxValue: 100,
-                    majorTicks: [
-                        "0",
-                        "20",
-                        "40",
-                        "60",
-                        "80",
-                        "100"
-                    ],
-                    minorTicks: 5,
-                    strokeTicks: true,
-                    highlights: [{
-                            from: 0,
-                            to: 20,
-                            color: 'rgba(250,50, 50, .4)'
-                        },
-                        {
-                            from: 20,
-                            to: 40,
-                            color: 'rgba(50, 250, 104, .4)'
-                        },
-                        {
-                            from: 40,
-                            to: 100,
-                            color: 'rgba(0, 0, 255, .4)'
-                        }
-                    ],
-                    colorPlate:'rgba(47, 255, 255, 0)',
-                    colorNumbers:'rgba(255, 255, 255, 1)',
-                    borderShadowWidth: 0,
-                    borders: false,
-                    needleType: "arrow",
-                    needleWidth: 3,
-                    needleCircleSize: 10,
-                    needleCircleOuter: true,
-                    needleCircleInner: false,
-                    animationDuration: 1500,
-                    animationRule: "linear"
-                })
-                Humidity_guage.draw();
-            </script>
-        </div>
-        <!-- kitchen -->
-        <div class="col-lg-3">
-            <canvas id="light_value"> </canvas>
-            <script>
-                var light_guage = new RadialGauge({
-                    renderTo: 'light_value',
-                    width: 200,
-                    height: 200,
-                    units: "Lux",
-                    title: "Lightness",
-                    minValue: 0,
-                    maxValue: 5000,
-                    majorTicks: [
-                        "0",
-                        "500",
-                        "1000",
-                        "1500",
-                        "2000",
-                        "2500"
-                    ],
-                    minorTicks: 5,
-                    strokeTicks: true,
-                    highlights: [{
-                            from: 0,
-                            to: 100,
-                            color: 'rgba(25,0, 168, .4)'
-                        },
-                        {
-                            from: 100,
-                            to: 500,
-                            color: 'rgba(47, 15, 224, .4)'
-                        },
-                        {
-                            from: 500,
-                            to: 1000,
-                            color: 'rgba(47, 15, 247, .4)'
-                        },
-                        {
-                            from: 1000,
-                            to: 2500,
-                            color: 'rgba(0, 204, 61, .4)'
-                        },
-                      
-                    ],
-                    colorPlate:'rgba(47, 255, 255, 0)',
-                    colorNumbers:'rgba(255, 255, 255, 1)',
-                    borderShadowWidth: 0,
-                    borders: false,
-                    needleType: "arrow",
-                    needleWidth: 3,
-                    needleCircleSize: 10,
-                    needleCircleOuter: true,
-                    needleCircleInner: false,
-                    animationDuration: 1500,
-                    animationRule: "linear"
-                })
-                light_guage.draw();
-            </script>
-        </div>
-
-    </div>
-
-
-
-
-    <div class="row">
         <div class="col-lg-4">
-            <p id="par_result"> </p>
-        </div>
-
-    </div>
-
-
-    <div class="row">
-        
-        <div class="col-lg-2">
-            <img id="img_roof_lights_moon" src="/static/images/icons/roof_lights_moon-off-100.jpg" alt="roof_lights_moon_btn" height="50" width="50">
-            <label class="switch">
-                <input id="chk_roof_lights_moon" type="checkbox" onclick="sendJSON(&#34;roof_lights_moon&#34;)">
-                <span class="slider round"></span>
-            </label>
-
-        </div>
-        <div class="col-lg-2">
-            <img id="img_roof_lights_sun" src="/static/images/icons/roof_lights_sun-off-100.jpg" alt="roof_lights_sun_btn" height="50" width="50">
-            <label class="switch">
-                <input id="chk_roof_lights_sun" type="checkbox" onclick="sendJSON(&#34;roof_lights_sun&#34;)">
-                <span class="slider round"></span>
-            </label>
-
-        </div>
-
-        <div class="col-lg-2">
-            <img id="img_lights" src="/static/images/icons/lights-off-100.jpg" alt="lights_btn" height="50" width="50">
-            <label class="switch">
-                <input id="chk_lights" type="checkbox" onclick="sendJSON(&#34;lights&#34;)">
-                <span class="slider round"></span>
-            </label>
-
-        </div>
-
-        <div class="col-lg-2">
-            <img id="img_hummidifier" src="/static/images/icons/hummidifier-off-100.jpg" alt="humidifier_btn"
-                height="50" width="50">
-            <label class="switch">
-                <input id="chk_mister" type="checkbox" onclick="sendJSON(&#34;mister&#34;)">
-                <span class="slider round"></span>
-            </label>
-        </div>
-
-        <div class="col-lg-2">
-            <img id="img_fan" src="/static/images/icons/fan-off-100.jpg" alt="fan" height="50" width="50">
-            <label class="switch">
-                <input id="chk_fan" type="checkbox" onclick="sendJSON(&#34;fan&#34;)">
-                <span class="slider round"></span>
-            </label>
-        </div>
-    </div>
-
-
-
-    <div class="row">
-
-        <div class="col-lg-2">
-            <img id="img_home_light" src="/static/images/icons/home_light-off-100.jpg" alt="home_lights_btn" height="50" width="50">
-            <label class="switch">
-                <input id="chk_home_light" type="checkbox" onclick="sendJSON(&#34;home_light&#34;)">
-                <span class="slider round"></span>
-            </label>
-
-        </div>
-       
-        <div class="col-lg-2">
-        
-        <div class="slidecontainer">
-        
-          <input type="range" min="0" max="100" value="50" class="slider" id="myRange" onclick="sendJSON(&#34;dimmer&#34;)">
-          
-          <p>Value: <span id="demo"></span></p>
-          
-        <script>
-            var slider = document.getElementById("myRange");
-            var output = document.getElementById("demo");
-            output.innerHTML = slider.value;
             
-            slider.oninput = function() {
-              output.innerHTML = this.value;
-            }
-        </script>
+                <div class="section">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <a  href="" alt="camera link" id="a_camera" ><img  id="img_camera" src="" alt="camera image" width="260" height="200"></a>
+                        </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-lg-4">
+            <div class="section">     
+                <div class="row">
+                   
+                    <div class="col-lg-6">
+                        <canvas id="external-temp"> </canvas>
+                        <script>
+                            var temprature_gauge = new RadialGauge({
+                                renderTo: 'external-temp',
+                                width: 200,
+                                height: 200,
+                                units: "°C",
+                                title: "Temprature",
+                                minValue: -10,
+                                maxValue: 50,
+                                majorTicks: ["-10", "0", "10", "20", "30", "40", "50"],
+                                minorTicks: 2,
+                                highlights: [{
+                                        from: -10,
+                                        to: 15,
+                                        color: 'rgba(0, 0, 255, .3)'
+                                    }, {
+                                        from: 15,
+                                        to: 27,
+                                        color: 'rgba(120, 120, 200, .3)'
+                                    },
+                                    {
+                                        from: 27,
+            
+                                        to: 50,
+                                        color: 'rgba(255, 0, 0, .3)'
+                                    }
+                                ],
+                                ticksAngle: 225,
+                                startAngle: 67.5,
+                                borders: false,
+                                borderShadowWidth: 0,
+                                valueBox: true,
+                                colorPlate:'rgba(47, 255, 255, 0)',
+                                colorNumbers:'rgba(255, 255, 255, 1)'
+                            })
+                            temprature_gauge.draw();
+                        </script>
+                    </div>
+               
+                    <div class="col-lg-6">
+
+                        <div class="row">
+                            <img id="img_fan" src="/static/images/icons/fan-off-100.png" alt="fan" height="50" width="50">
+                            <label class="switch">
+                            <input id="chk_fan" type="checkbox" onclick="sendJSON(&#34;fan&#34;)">
+                            <span class="slider round"></span>
+                            </label>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+
+        <div class="col-lg-4">
+            
+            <div class="section">
+                <div class="row">
+                    <div class="col-lg-6">  
+                        <canvas id="hummidity_value"> </canvas>
+                        <script>
+                            var Humidity_guage = new RadialGauge({
+                                renderTo: 'hummidity_value',
+                                width: 200,
+                                height: 200,
+                                units: "%RH",
+                                title:"Hummidity",
+                                minValue: 0,
+                                maxValue: 100,
+                                majorTicks: [
+                                    "0",
+                                    "20",
+                                    "40",
+                                    "60",
+                                    "80",
+                                    "100"
+                                ],
+                                minorTicks: 5,
+                                strokeTicks: true,
+                                highlights: [{
+                                        from: 0,
+                                        to: 20,
+                                        color: 'rgba(250,50, 50, .4)'
+                                    },
+                                    {
+                                        from: 20,
+                                        to: 40,
+                                        color: 'rgba(50, 250, 104, .4)'
+                                    },
+                                    {
+                                        from: 40,
+                                        to: 100,
+                                        color: 'rgba(0, 0, 255, .4)'
+                                    }
+                                ],
+                                colorPlate:'rgba(47, 255, 255, 0)',
+                                colorNumbers:'rgba(255, 255, 255, 1)',
+                                borderShadowWidth: 0,
+                                borders: false,
+                                needleType: "arrow",
+                                needleWidth: 3,
+                                needleCircleSize: 10,
+                                needleCircleOuter: true,
+                                needleCircleInner: false,
+                                animationDuration: 1500,
+                                animationRule: "linear"
+                            })
+                            Humidity_guage.draw();
+                        </script>
+                    </div>
+      
+       
+                    <div class="col-lg-6">
+                        <div class="row">
+                            <img id="img_hummidifier" src="/static/images/icons/hummidifier-off-100.png" alt="humidifier_btn"
+                                height="50" width="50">
+                            <label class="switch">
+                                <input id="chk_mister" type="checkbox" onclick="sendJSON(&#34;mister&#34;)">
+                                <span class="slider round"></span>
+                            </label>
+                        </div> 
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    </div>
 
+    <div class="row">
+
+        <div class="col-lg-4">
+            <div class="section">
+                <div class="row">
+
+                    <div class="col-lg-3">
+                        <img id="img_home_light" src="/static/images/icons/home_light-off-100.png" alt="home_lights_btn" height="50" width="50">
+                        <label class="switch">
+                            <input id="chk_home_light" type="checkbox" onclick="sendJSON(&#34;home_light&#34;)">
+                            <span class="slider round"></span>
+                        </label>
+            
+                    </div>
+                
+                    <div class="col-lg-6">
+                    
+                    <div class="slidecontainer">
+                    
+                    <input type="range" min="0" max="100" value="50" class="slider" id="myRange" onclick="sendJSON(&#34;dimmer&#34;)">
+                    
+                    <p>Value: <span id="demo"></span></p>
+                    
+                    <script>
+                        var slider = document.getElementById("myRange");
+                        var output = document.getElementById("demo");
+                        output.innerHTML = slider.value;
+                        
+                        slider.oninput = function() {
+                        output.innerHTML = this.value;
+                        }
+                    </script>
+                    </div>
+                </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="section">
+                <div class="row">
+
+                    <div class="col-lg-6">
+                        <canvas id="light_value"> </canvas>
+                        <script>
+                            var light_guage = new RadialGauge({
+                                renderTo: 'light_value',
+                                width: 200,
+                                height: 200,
+                                units: "Lux",
+                                title: "Lightness",
+                                minValue: 0,
+                                maxValue: 5000,
+                                majorTicks: [
+                                    "0",
+                                    "500",
+                                    "1000",
+                                    "1500",
+                                    "2000",
+                                    "2500"
+                                ],
+                                minorTicks: 5,
+                                strokeTicks: true,
+                                highlights: [{
+                                        from: 0,
+                                        to: 100,
+                                        color: 'rgba(25,0, 168, .4)'
+                                    },
+                                    {
+                                        from: 100,
+                                        to: 500,
+                                        color: 'rgba(47, 15, 224, .4)'
+                                    },
+                                    {
+                                        from: 500,
+                                        to: 1000,
+                                        color: 'rgba(47, 15, 247, .4)'
+                                    },
+                                    {
+                                        from: 1000,
+                                        to: 2500,
+                                        color: 'rgba(0, 204, 61, .4)'
+                                    },
+                                
+                                ],
+                                colorPlate:'rgba(47, 255, 255, 0)',
+                                colorNumbers:'rgba(255, 255, 255, 1)',
+                                borderShadowWidth: 0,
+                                borders: false,
+                                needleType: "arrow",
+                                needleWidth: 3,
+                                needleCircleSize: 10,
+                                needleCircleOuter: true,
+                                needleCircleInner: false,
+                                animationDuration: 1500,
+                                animationRule: "linear"
+                            })
+                            light_guage.draw();
+                        </script>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="row">
+                            <img id="img_roof_lights_moon" src="/static/images/icons/roof_lights_moon-off-100.png" alt="roof_lights_moon_btn" height="50" width="50">
+                            <label class="switch">
+                                <input id="chk_roof_lights_moon" type="checkbox" onclick="sendJSON(&#34;roof_lights_moon&#34;)">
+                                <span class="slider round"></span>
+                            </label>
+                
+                        </div>
+                        <div class="row">
+                            <img id="img_roof_lights_sun" src="/static/images/icons/roof_lights_sun-off-100.png" alt="roof_lights_sun_btn" height="50" width="50">
+                            <label class="switch">
+                                <input id="chk_roof_lights_sun" type="checkbox" onclick="sendJSON(&#34;roof_lights_sun&#34;)">
+                                <span class="slider round"></span>
+                            </label>
+                
+                        </div>
+                
+                        <div class="row">
+                            <img id="img_lights" src="/static/images/icons/lights-off-100.png" alt="lights_btn" height="50" width="50">
+                            <label class="switch">
+                                <input id="chk_lights" type="checkbox" onclick="sendJSON(&#34;lights&#34;)">
+                                <span class="slider round"></span>
+                            </label>
+                
+                        </div>
+                    </div>
+                </div>
+            
+            </div>    
+
+        
+
+        </div>
+    </div>
+  
+  
 </body>
 
 </html>

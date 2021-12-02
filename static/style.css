@@ -1,3 +1,19 @@
+
+.row {
+  margin-top: 10px;
+  
+}
+
+.section
+{  background: #01446b;
+  border-radius: 10px;
+
+  margin-top: 30px;
+  margin-right: 20px;
+  margin-left: 20px;
+  padding-left: 10px;
+  padding-top: 20px;
+  padding-bottom: 10px;}
 /* The switch - the box around the slider */
 .switch {
   position: relative;
@@ -33,7 +49,6 @@
   width: 26px;
   left: 4px;
   bottom: 4px;
-  background-color: white;
   -webkit-transition: .4s;
   transition: .4s;
 }
