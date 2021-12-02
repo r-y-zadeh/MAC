@@ -12,9 +12,9 @@ savePath='static/saved/'
 shtdataPin = 24
 shtClockPin=23
 
-lightRelayPort=21
+lightRelayPort=20
 home_light_Relay_Port=16
-fanRelayPort=20
+fanRelayPort=21
 MisterRelayPort=13
 RoofLightSunRelayPort = 17
 RoofLightMoonRelayPort = 27
