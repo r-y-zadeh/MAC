@@ -14,11 +14,8 @@ import json
 import datetime
 from flask_socketio import SocketIO, emit
 from tiny_logger_model import Log_Data ,db
-
 import paho.mqtt.client as mqtt
 from server_configs import *
-
-import schedule
 
 from sensors_op import *
 from actuators_op import *
@@ -75,7 +72,7 @@ def get_all_info():
         inset_to_db(result)
 
         #publish it on MQTT server
-        publish_on_mqtt(response)
+        publish_on_mqtt(result)
 
         query_result= get_last_record()        
         pprint(query_result)       

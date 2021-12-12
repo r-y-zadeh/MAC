@@ -13,7 +13,8 @@
   margin-left: 20px;
   padding-left: 10px;
   padding-top: 20px;
-  padding-bottom: 10px;}
+  padding-bottom: 10px;
+opacity: 0.5;}
 /* The switch - the box around the slider */
 .switch {
   position: relative;
