@@ -25,6 +25,9 @@ build1:
 
 test1:
   stage: test
+  only:
+    - develop
+    - production
   script:
     - echo "Do a test here"
     - echo "For example run a test suite"
