@@ -48,6 +48,10 @@ class cameraUtils():
 			return fileId ,thumb_file_id
 
 		except Exception as ex:
+			if hasattr(ex, 'message'):
+				print(e.message)
+			else:
+				print(ex)
 			return None , None
 
 	def setRes(self,resolutionValue):

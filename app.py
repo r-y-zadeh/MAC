@@ -13,12 +13,13 @@ from pprint import pprint
 import json
 import datetime
 from flask_socketio import SocketIO, emit
-from tiny_logger_model import Log_Data ,db
+
 import paho.mqtt.client as mqtt
 from server_configs import *
-
+from perpetualTimer import perpetualTimer
 from sensors_op import *
 from actuators_op import *
+import db_operations as dbo
 
 logging.basicConfig(filename='app.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
 
@@ -50,6 +51,7 @@ client.connect(mqtt_host)
 client.subscribe(mqtt_topic)
 
 import time 
+
 def get_all_info():
         timestr=time.strftime('%Y-%m-%d %H:%M:%S')
         temprature=shtSensor.read_temperature()
@@ -69,18 +71,26 @@ def get_all_info():
                 "image" : full_path ,
                 "thumb":full_thumb_path }
         pprint(result)
-        inset_to_db(result)
+        dbo.inset_to_db(result)
 
         #publish it on MQTT server
         publish_on_mqtt(result)
 
-        query_result= get_last_record()        
+        query_result= dbo.get_last_record()        
         pprint(query_result)       
+        
         
         return result
 
 Logging_time = perpetualTimer(logInterval,get_all_info)
 Logging_time.start()
+
+
+
+
+x= dbo.get_top_records()
+pprint(x)
+
 
 def publish_on_mqtt(result):
 
@@ -101,7 +111,7 @@ def publish_on_mqtt(result):
 def background_thread():
     while True:
         socketio.sleep(Seconds_to_emit_response)
-        res=get_last_record()
+        res=dbo.get_last_record()
         
         socketio.emit('my_response',
                       res,
@@ -120,7 +130,8 @@ def recive_command():
 
 @app.route('/')
 def index():
- 
+   
+    # pprint(x )
     return render_template('index_new.html' , async_mode=socketio.async_mode)
 
 
@@ -198,29 +209,6 @@ def upload():
                                 filename=filename))
 
 
-
-def inset_to_db(result):
-    dt = Log_Data(D_temprature= result["temprature"], D_hummidity= result["humidity"], 
-                    D_Lux= result["light"], D_time= result["time"] ,
-                    U_image_path=  result["image"],U_image_thumb_path = result["thumb"], U_Desc="_" )
-    db.session.add(dt)
-    db.session.commit()
-
-def get_top_records(top_num=100):
-    x=Log_Data.query.order_by(Log_Data.D_id.desc()).limit(top_num)
-    return x
-    
-    
-def get_last_record():
-    temp_log = Log_Data.query.order_by(Log_Data.D_id.desc()).first()
-    result={"time":temp_log.D_time,
-                "temprature": temp_log.D_temprature,
-                "humidity": temp_log.D_hummidity,
-                "light": temp_log.D_Lux,
-                "image":temp_log.U_image_path,
-                "thumb":temp_log.U_image_thumb_path,
-                }
-    return result
 
 
 

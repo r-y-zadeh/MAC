@@ -7,3 +7,5 @@ smbus
 paho-mqtt
 picamera
 pillow
+eventlet
+gevent-websocket
